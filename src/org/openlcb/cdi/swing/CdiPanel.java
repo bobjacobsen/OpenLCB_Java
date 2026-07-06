@@ -3225,6 +3225,7 @@ public class CdiPanel extends JPanel {
          *              this is a {@link GroupPane}.
          */
         public void handleManualPaneEnd(JPanel panel) {
+            handleGroupPaneEnd(pane); // default implementation provides same function
             return;
         }
         
