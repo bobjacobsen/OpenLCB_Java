@@ -359,7 +359,7 @@ public class CdiPanel extends JPanel {
         createHelper.add(lineHelper);
 
         // Calls into JMRI to add the Create Sensor and Create Turnout buttons.
-        factory.handleGroupPaneEnd(createHelper);
+        factory.handleManualEnd(createHelper);
         sensorHelperPanel = new CollapsiblePanel("Sensor/Turnout creation", createHelper);
         sensorHelperPanel.setBackground(getForeground());
         sensorHelperPanel.setExpanded(false);
@@ -3204,6 +3204,19 @@ public class CdiPanel extends JPanel {
         }
 
         /**
+         * Similar to handleGroupPaneEnd, this asserts that the
+         * processing should happen on the current group 
+         * which has been manually (e.g. not from CDI) created.
+         *
+         * @param pane The GUI panel that has been populated with the 
+         *              representation of the group. In {@link CdiPanel}, 
+         *              this is a {@link GroupPane}.
+         */
+        public void handleManualEnd(JPanel pane) {
+            handleGroupPaneEnd(pane); // default implementation provides same function
+        }
+        
+        /**
          * Called after a group have been constructedd.
          * Paired with {@link handleGroupPaneStart}.
          *
@@ -3212,7 +3225,6 @@ public class CdiPanel extends JPanel {
          *              this is a {@link GroupPane}.
          */
         public void handleGroupPaneEnd(JPanel pane) {
-            return;
         }
         
         /**

@@ -69,6 +69,7 @@ abstract public class Message implements OpenLcb {
 
      /**
       * Get the numerical value of the MTI
+      * @return The MTI as a standard full value
       */
      abstract public int getMTI();
 }
