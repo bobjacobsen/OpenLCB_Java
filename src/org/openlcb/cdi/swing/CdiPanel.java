@@ -74,6 +74,7 @@ import javax.swing.ButtonGroup;
 import javax.swing.ComboBoxModel;
 import javax.swing.InputVerifier;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JFileChooser;
@@ -2644,11 +2645,59 @@ public class CdiPanel extends JPanel {
 
     }
     
+    // represents a checkbox
+    private class CheckboxPane extends JPanel {
+    
+        final int SELECTED_CHOICE = 1;
+        final int UNSELECTED_CHOICE = 0;
+        
+        CdiRep.Map map;
+        JCheckBox checkbox;
+        
+        CheckboxPane(CdiRep.Map map, ActionListener action) {
+            this.map = map;
+            
+            setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+            // create the pane and fill with labelled checkbox
+            String label = map.getValues().get(SELECTED_CHOICE);
+            checkbox = new JCheckBox(label);
+            add(checkbox);
+            checkbox.addActionListener(action);
+        }
+        
+        long getCurrentValue() {
+            return Long.parseLong(getCurrentValueString());
+        }
+        
+        // value is a numeric string
+        void setCurrentValue(String value) {
+            if (value.equals(map.getValues().get(SELECTED_CHOICE))) {
+                checkbox.setSelected(true);
+            } else {
+                checkbox.setSelected(false);
+            }
+        }
+        
+        String getCurrentValueString() {
+            if (checkbox.isSelected()) {
+                return map.getKeys().get(SELECTED_CHOICE);
+            } else {
+                return map.getKeys().get(UNSELECTED_CHOICE);
+            }
+        }
+        
+        String getDisplayText() {
+            return getCurrentValueString();
+        }
+
+    }
+    
     private class IntPane extends EntryPane {
         JTextField textField = null;
         JComboBox<String> box = null;
         SliderWithView sliderView = null;
         RadioButtonPane radiobuttons = null;
+        CheckboxPane checkbox = null;
         CdiRep.Map map = null;
         private final ConfigRepresentation.IntegerEntry entry;
         boolean suppressExternal = false; // used to suppress slider output when changed from read
@@ -2673,6 +2722,15 @@ public class CdiPanel extends JPanel {
                     };
                     radiobuttons = new RadioButtonPane(map, action);
                     textComponent = radiobuttons;
+                } else if (entry.rep.isCheckboxHint()) {
+                    ActionListener action = new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent actionEvent) {
+                            updateColor();
+                        }
+                    };
+                    checkbox = new CheckboxPane(map, action);
+                    textComponent = checkbox;
                 } else {
                     box = new JComboBox(map.getValues().toArray(new String[]{""})) {
                         public java.awt.Dimension getMaximumSize() {
@@ -2776,6 +2834,8 @@ public class CdiPanel extends JPanel {
                 value = sliderView.slider.getValue();
             } else if (radiobuttons != null) {
                 value = radiobuttons.getCurrentValue(); 
+            } else if (checkbox != null) {
+                value = checkbox.getCurrentValue(); 
             } else {
                 // have to get key from stored map value
                 String entry = (String) box.getSelectedItem();
@@ -2834,6 +2894,8 @@ public class CdiPanel extends JPanel {
                 return ""+sliderView.slider.getValue();
             } else if (radiobuttons != null) {
                 return radiobuttons.getDisplayText();
+            } else if (checkbox != null) {
+                return checkbox.getDisplayText();
             }
             String s = (box == null) ? (String) textField.getText()
                     : (String) box.getSelectedItem();
@@ -2853,6 +2915,8 @@ public class CdiPanel extends JPanel {
                 return ""+sliderView.slider.getValue();
             } else if (radiobuttons != null) {
                 return radiobuttons.getCurrentValueString();
+            } else if (checkbox != null) {
+                return checkbox.getCurrentValueString();
             }
             
             String s;
