@@ -2651,7 +2651,7 @@ public class CdiPanel extends JPanel {
         final int SELECTED_CHOICE = 1;
         final int UNSELECTED_CHOICE = 0;
         
-        CdiRep.Map map;
+        CdiRep.Map map; // keys are numeric contents, values are string names
         JCheckBox checkbox;
         
         CheckboxPane(CdiRep.Map map, ActionListener action) {
@@ -2669,7 +2669,7 @@ public class CdiPanel extends JPanel {
             return Long.parseLong(getCurrentValueString());
         }
         
-        // value is a numeric string
+        // value is a name string
         void setCurrentValue(String value) {
             if (value.equals(map.getValues().get(SELECTED_CHOICE))) {
                 checkbox.setSelected(true);
@@ -2678,7 +2678,7 @@ public class CdiPanel extends JPanel {
             }
         }
         
-        String getCurrentValueString() {
+        String getCurrentValueString() { // returns the numeric value of current selection as a string
             if (checkbox.isSelected()) {
                 return map.getKeys().get(SELECTED_CHOICE);
             } else {
@@ -2687,7 +2687,11 @@ public class CdiPanel extends JPanel {
         }
         
         String getDisplayText() {
-            return getCurrentValueString();
+            if (checkbox.isSelected()) {
+                return map.getValues().get(SELECTED_CHOICE);
+            } else {
+                return map.getValues().get(UNSELECTED_CHOICE);
+            }
         }
 
     }
