@@ -2861,6 +2861,8 @@ public class CdiPanel extends JPanel {
                 sliderView.slider.setValue(Integer.parseInt(value));
             } else if (radiobuttons != null) {
                 radiobuttons.setCurrentValue(value);
+            } else if (checkbox != null) {
+                checkbox.setCurrentValue(value);
             }
             if (box != null) { 
                 // check to see if item exists
